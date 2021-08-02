@@ -10,7 +10,14 @@ export class StudentService {
         return this.students;
     }
     getStudentById(studentId: string): FindStudentResponseDto {
-        return this.students.find(student => student.id === studentId);
+        return this.students.find(student => {
+            return student.id === studentId
+        });
+    }
+    getStudentsByTeacherId(teacherId: string): FindStudentResponseDto[] {
+        return this.students.filter(student => {
+            return student.teacher === teacherId
+        });
     }
     createStudent(payload: CreateStudentDto): StudentResponseDto {
         const newStudent = {
@@ -20,15 +27,26 @@ export class StudentService {
         this.students.push(newStudent);
         return newStudent;
     }
-    updateStudent(payload: UpdateStudentDto, studentId: string) {
+    updateStudent(payload: UpdateStudentDto, studentId: string): StudentResponseDto {
         let updateStudent: StudentResponseDto;
         const updateStudentList = this.students.map(student => {
             if (student.id === studentId) {
                 updateStudent = { id: studentId, ...payload };
-            } else return student;
+                return updateStudent;
+            } return student;
         });
         this.students = updateStudentList;
-
+        return updateStudent;
+    }
+    updateStudentTeacher(teacherId: string, studentId: string): StudentResponseDto {
+        let updateStudent: StudentResponseDto;
+        const updateStudentList = this.students.map(student => {
+            if (student.id === studentId) {
+                updateStudent = { ...student, teacher: teacherId };
+                return updateStudent;
+            } return student;
+        });
+        this.students = updateStudentList;
         return updateStudent;
     }
 }
